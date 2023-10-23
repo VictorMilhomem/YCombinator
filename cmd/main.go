@@ -26,6 +26,15 @@ var fib_tag = func(recurse Func[int, int]) Func[int, int] {
 	}
 }
 
+var power_tag = func(recurse Func[struct{ x, n int }, int]) Func[struct{ x, n int }, int] {
+	return func(params struct{ x, n int }) int {
+		if params.n == 0 {
+			return 1
+		}
+		return params.x * recurse(struct{ x, n int }{params.x, params.n - 1})
+	}
+}
+
 func main() {
 	// factorial example
 	fac := Y(factorial_tag)
@@ -40,4 +49,13 @@ func main() {
 	n = 6
 	val = fib(n)
 	fmt.Printf("Fibonacci of %d: %d\n", n, val)
+
+	// Power function
+
+	pow := Y(power_tag)
+
+	x := 2
+	n = 5
+	val = pow(struct{ x, n int }{x, n})
+	fmt.Printf("%d to the power of %d: %d\n", x, n, val)
 }
